@@ -44,10 +44,6 @@ class HomeActivity : BaseNavigationActivity<ActivityHomeBinding>() {
     }
 
     private fun setupViews() {
-        setUpToolBar(
-            toolbarBinding = binding.toolbarView
-        )
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             binding.toolbarView.toolbar.transitionName = getString(R.string.transition_appLogo)
         }
@@ -72,6 +68,10 @@ class HomeActivity : BaseNavigationActivity<ActivityHomeBinding>() {
         })
 
         viewModel.navigate.observe(this, NavigationObserver(listener = this))
+
+        viewModel.selectedMovie.observe(this){
+            viewModel.navigateToHomeDetails()
+        }
     }
 
     override fun onBackPressed() {
@@ -87,6 +87,9 @@ class HomeActivity : BaseNavigationActivity<ActivityHomeBinding>() {
     override fun getFragmentNavigationInstance(event: String): NavigationInstance {
         return when (event) {
             HomeViewModel.Events.NAVIGATE_TO_HOME -> {
+                setUpToolBar(
+                    toolbarBinding = binding.toolbarView
+                )
                 return NavigationInstance(
                     fragment = HomeFragment.newInstance(),
                     addToBackStack = false,
@@ -94,8 +97,13 @@ class HomeActivity : BaseNavigationActivity<ActivityHomeBinding>() {
                 )
             }
             HomeViewModel.Events.NAVIGATE_TO_HOME_DETAILS -> {
+                val isLandScape = binding.inContent.contentDetail != null
+                setUpToolBar(
+                    toolbarBinding = binding.toolbarView,
+                    showBackArrowOrHome = isLandScape.not()
+                )
                 return NavigationInstance(
-                    frameId = R.id.contentDetail,
+                    frameId = if(isLandScape) R.id.contentDetail else R.id.content,
                     fragment = HomeDetailsFragment.newInstance(),
                     pushAnimation = NavigationAnimation.FADE_IN
                 )
