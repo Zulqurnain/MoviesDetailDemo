@@ -1,12 +1,17 @@
 package com.jutt.moviesdetaildemo.viewmodels
 
 import androidx.lifecycle.*
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.jutt.moviesdetaildemo.R
+import com.jutt.moviesdetaildemo.application.Contants.paginationConfig
 import com.jutt.moviesdetaildemo.architecture.Event
+import com.jutt.moviesdetaildemo.data.data_sources.FlickrPhotoSearchFactory
+import com.jutt.moviesdetaildemo.data.models.FlickrMappedPhoto
 import com.jutt.moviesdetaildemo.data.models.Movie
-import com.jutt.moviesdetaildemo.data.repositories.DatabaseRepository
 import com.jutt.moviesdetaildemo.data.repositories.MoviesRepository
 import com.jutt.moviesdetaildemo.data.repositories.ResourcesRepository
+import com.jutt.moviesdetaildemo.helper.AlertDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -33,8 +38,22 @@ class HomeViewModel @Inject constructor(
     private val _selectedMovie = MutableLiveData<Movie>()
     val selectedMovie: LiveData<Movie> get() = _selectedMovie
 
+    private val _movieCoverPhotoGot = MutableLiveData<FlickrMappedPhoto>()
+    val movieCoverPhotoGot: LiveData<FlickrMappedPhoto> get() = _movieCoverPhotoGot
+
     private val _toolbarVisible = MutableLiveData<Boolean>()
     val toolbarVisible: LiveData<Boolean> get() = _toolbarVisible
+
+    //////////////////////////////////////////////////////////////
+
+    private lateinit var _flickrPhotosPaginatedData: LiveData<PagedList<FlickrMappedPhoto>>
+    private val flickrPhotosDataFactory = MutableLiveData<FlickrPhotoSearchFactory>()
+    val startPagingFickrPhotos = MutableLiveData<Event<Boolean>>()
+    val paginatedFickrPhotos: LiveData<PagedList<FlickrMappedPhoto>>
+        get() = _flickrPhotosPaginatedData
+
+    //////////////////////////////////////////////////////////////
+
 
     override fun onCleared() {
         super.onCleared()
@@ -69,7 +88,67 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getMovieSingleImageFromFlickr(movieName: String) {
+        viewModelScope.launch {
+            _showLoader.value = true
+            val response =
+                moviesRepository.getSingleImageFromFlickr(movieName)
+            _showLoader.value = false
+            if (response.success && response.data != null) {
+                response.data.let { _movieCoverPhotoGot.postValue(it) }
+            } else {
+                showErrorDialog(
+                    messageToShow = response.message,
+                    messageStrRes = R.string.error_message_push_id_not_available
+                )
+            }
+            _showLoader.value = false
+        }
+    }
+
     fun setToolbarVisibility(visible: Boolean) {
         _toolbarVisible.postValue(visible)
+    }
+
+    /**
+     * [IMPORTANT] Only call this method first time per screen
+     * because it resets attributes of pagination and your items will reload from scratch
+     *
+     * @param searchQuery
+     * @param reloadFromFirstItem true to reload from scratch , false otherwise
+     */
+    private fun initFlickrImagesPagination(
+        searchQuery: String,
+        reloadFromFirstItem: Boolean = true
+    ) {
+        /**
+         * making sure items are reloaded from scratch or not
+         */
+        if (reloadFromFirstItem.not()
+            && flickrPhotosDataFactory.value != null
+            && flickrPhotosDataFactory.value?.searchText == searchQuery
+        ) return
+
+        /**
+         * Configuring Pagination
+         */
+        val config = paginationConfig.build()
+        val dataFactory = FlickrPhotoSearchFactory(
+            networkManager = moviesRepository.networkManager,
+            showLoader = _showLoader
+        )
+
+        flickrPhotosDataFactory.value = dataFactory
+        _flickrPhotosPaginatedData = LivePagedListBuilder(dataFactory, config).build()
+
+        /**
+         * refreshing list to update LIVEDATA so UI will update
+         */
+        startPagingFickrPhotos.value = Event.create(true)
+
+        /**
+         * Invalidate the data
+         */
+        flickrPhotosDataFactory.value?.refresh()
     }
 }

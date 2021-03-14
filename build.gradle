@@ -43,6 +43,7 @@ buildscript {
         androidSSP = '1.0.6'
         kotlinRecycler = "1.2.1"
         groupie_version = "2.9.0"
+        pagingKtxRuntime = "2.1.2"
         daggerHiltVersion = "2.32-alpha"
         hiltLifeCycleVersion = "1.0.0-alpha03"
     }

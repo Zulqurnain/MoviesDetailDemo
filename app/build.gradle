@@ -39,6 +39,8 @@ android {
 
         def mobileAppScheme = "catfactsdemo"
         buildConfigField("String", "MOBILE_APP_SCHEME", '"' + mobileAppScheme + '"')
+        buildConfigField("String", "FLICKR_API_KEY", '"a6803cdff36ba3bc2484a3a30b07377"')
+        buildConfigField("String", "FLICKR_API_SECRET", '"174bba99fbd54c81"')
         buildConfigField("String", "APL", '"https://play.google.com/store/apps/details?id=' + applicationId + '"')
         manifestPlaceholders = [
                 mobileAppScheme      : mobileAppScheme,
@@ -120,6 +122,8 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:$rootProject.workRuntimeVersion"
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    implementation "androidx.paging:paging-runtime-ktx:$rootProject.pagingKtxRuntime"
 
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okHttpLoggingInterceptorVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
