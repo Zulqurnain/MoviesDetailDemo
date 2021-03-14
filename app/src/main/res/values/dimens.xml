@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="activity_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">@dimen/activity_margin</dimen>
+    <dimen name="activity_vertical_margin">@dimen/activity_margin</dimen>
+    <dimen name="activity_margin_condensed">8dp</dimen>
+    <dimen name="activity_horizontal_margin_condensed">@dimen/activity_margin_condensed</dimen>
+    <dimen name="activity_vertical_margin_condensed">@dimen/activity_margin_condensed</dimen>
+    <dimen name="activity_margin_expanded">32dp</dimen>
+    <dimen name="activity_horizontal_margin_expanded">@dimen/activity_margin_expanded</dimen>
+    <dimen name="activity_vertical_margin_expanded">@dimen/activity_margin_expanded</dimen>
+
+    <dimen name="margin_design_170">56dp</dimen>
 
     <!-- Exact dimensions from Designs (divided by 3) -->
     <dimen name="margin_design_3">1dp</dimen>
@@ -12,11 +23,14 @@
     <dimen name="margin_design_40">13dp</dimen>
     <dimen name="margin_design_48">16dp</dimen>
     <dimen name="margin_design_52">17dp</dimen>
+    <dimen name="margin_design_60">20dp</dimen>
     <dimen name="margin_design_63">21dp</dimen>
     <dimen name="margin_design_80">26dp</dimen>
     <dimen name="margin_design_180">60dp</dimen>
     <dimen name="margin_design_196">65dp</dimen>
     <dimen name="margin_design_258">86dp</dimen>
     <dimen name="margin_design_340">108dp</dimen>
+
+    <dimen name="alert_dialog_corner_radius">20dp</dimen>
 
 </resources>
