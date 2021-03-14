@@ -52,7 +52,7 @@ android {
         release {
             minifyEnabled false
             def scheme = "https"
-            def host = "cat-fact.herokuapp.com"
+            def host = "example.com"
             buildConfigField("String", "API_HOST_SCHEME", "\"${scheme}\"")
             buildConfigField("String", "BASE_URL", "\"${scheme}" + "://" + "${host}" + "/" + "\"")
             buildConfigField("String", "API_BASE_URL", "\"${scheme}" + "://" + "${host}" + "/" + "\"")
@@ -63,7 +63,7 @@ android {
         debug {
             minifyEnabled false
             def scheme = "https"
-            def host = "cat-fact.herokuapp.com"
+            def host = "example.com"
             buildConfigField("String", "API_HOST_SCHEME", "\"${scheme}\"")
             buildConfigField("String", "BASE_URL", "\"${scheme}" + "://" + "${host}" + "/" + "\"")
             buildConfigField("String", "API_BASE_URL", "\"${scheme}" + "://" + "${host}" + "/" + "\"")

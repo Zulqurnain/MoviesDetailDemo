@@ -11,7 +11,6 @@ import com.jutt.moviesdetaildemo.data.models.FlickrMappedPhoto
 import com.jutt.moviesdetaildemo.data.models.Movie
 import com.jutt.moviesdetaildemo.data.repositories.MoviesRepository
 import com.jutt.moviesdetaildemo.data.repositories.ResourcesRepository
-import com.jutt.moviesdetaildemo.helper.AlertDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -33,7 +32,11 @@ class HomeViewModel @Inject constructor(
     private val _successMessage = MutableLiveData<Event<String>>()
     val successMessage: LiveData<Event<String>> get() = _successMessage
 
-    val moviesList: LiveData<List<Movie>> get() = moviesRepository.databaseRepository.getAllMovies()
+    private val _searchedMovies = MutableLiveData<List<Any>>()
+    val searchedMovies: LiveData<List<Any>> get() = _searchedMovies
+
+    private val _moviesList = MutableLiveData<List<Movie>>()
+    val moviesList: LiveData<List<Movie>> get() = _moviesList
 
     private val _selectedMovie = MutableLiveData<Movie>()
     val selectedMovie: LiveData<Movie> get() = _selectedMovie
@@ -83,10 +86,26 @@ class HomeViewModel @Inject constructor(
     fun fetchMoviesData() {
         viewModelScope.launch {
             _showLoader.value = true
-            moviesRepository.syncFetchMoviesList()
+            val movies = moviesRepository.syncFetchMoviesList()
+            _moviesList.value = movies
             _showLoader.value = false
         }
     }
+    fun searchMovies(searchQuery: String) {
+        viewModelScope.launch {
+            if(searchQuery.isEmpty()){
+                _showLoader.postValue(true)
+                _searchedMovies.postValue(listOf())
+                _moviesList.postValue(moviesList.value)
+                _showLoader.postValue(false)
+            }else {
+                _searchedMovies.postValue(
+                    moviesRepository.searchMovies(searchQuery)
+                )
+            }
+        }
+    }
+
 
     fun getMovieSingleImageFromFlickr(movieName: String) {
         viewModelScope.launch {

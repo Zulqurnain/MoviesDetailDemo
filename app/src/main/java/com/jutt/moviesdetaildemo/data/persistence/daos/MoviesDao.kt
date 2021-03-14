@@ -14,10 +14,13 @@ abstract class MoviesDao : BaseDao<Movie>() {
     abstract suspend fun deleteById(id: Long): Int
 
     @Query("SELECT * FROM Movie")
-    abstract fun loadAll(): LiveData<List<Movie>>
+    abstract suspend fun loadAll(): List<Movie>
+
+    @Query("SELECT * FROM Movie WHERE title LIKE :query || '%' GROUP BY year LIMIT 0,:max")
+    abstract suspend fun loadMoviesByQuery(query: String, max: Int): List<Movie>
 
     @Query("SELECT COUNT(id) FROM Movie")
-    abstract fun getCount(): Int
+    abstract suspend fun getCount(): Int
 
     @Query("DELETE FROM Movie")
     abstract suspend fun clearTable()

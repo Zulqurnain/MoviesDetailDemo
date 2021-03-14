@@ -1,25 +1,23 @@
 package com.jutt.moviesdetaildemo.view.fragments
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.DeviceUtils
-import com.blankj.utilcode.util.PhoneUtils
-import com.blankj.utilcode.util.ScreenUtils
+import com.abed.kotlin_recycler.adapters.ViewTypeRecyclerAdapter
+import com.blankj.utilcode.util.KeyboardUtils
 import com.jutt.moviesdetaildemo.R
 import com.jutt.moviesdetaildemo.core.BaseFragment
-import com.jutt.moviesdetaildemo.core.RecyclerViewAdapter
 import com.jutt.moviesdetaildemo.data.models.Movie
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeBinding
-import com.jutt.moviesdetaildemo.view.adapters.MoviesListAdapter
-import com.jutt.moviesdetaildemo.view.decorations.SpaceItemDecoration
+import com.jutt.moviesdetaildemo.view.adapters.AdapterExtensionBindings
 import com.jutt.moviesdetaildemo.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding>() {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryTextListener {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentHomeBinding
         get() = FragmentHomeBinding::inflate
 
@@ -32,51 +30,99 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private val viewModel by activityViewModels<HomeViewModel>()
 
-    private val adapterMovies: MoviesListAdapter by lazy { MoviesListAdapter(requireContext())}
+    lateinit var searchMoviesAdapter: ViewTypeRecyclerAdapter<Any>
+
+    private var searchView: SearchView? = null
+    private var lastQuery: String? = null
 
     override fun onReady() {
-        setUpObservers()
         setUpViews()
+        setUpObservers()
 
         viewModel.fetchMoviesData()
     }
 
     private fun setUpObservers() {
-        viewModel.moviesList.observe(viewLifecycleOwner){
-            adapterMovies.set(it.toMutableList())
-            adapterMovies.notifyDataSetChanged()
+        viewModel.moviesList.observe(viewLifecycleOwner) {
+            setUpSearchAdapter(it)
+            KeyboardUtils.hideSoftInput(binding.root)
+        }
+        viewModel.searchedMovies.observe(viewLifecycleOwner) {
+            setUpSearchAdapter(it)
         }
     }
 
     private fun setUpViews() {
-        setUpMoviesRecycler()
+        setHasOptionsMenu(true)
+        setUpSimpleMoviesRecycler()
     }
 
-    private fun setUpMoviesRecycler(){
+    private fun setUpSearchAdapter(data: List<Any>) {
+        searchMoviesAdapter =
+            AdapterExtensionBindings.multiTypeBindingForSearchResults(
+                binding.recyclerView,
+                data,
+                onClick = {
+                    if (it is Movie)
+                        viewModel.selectMovie(it)
+                }
+            )
+
+    }
+
+    private fun setUpSimpleMoviesRecycler() {
+        setUpSearchAdapter(listOf())
         with(binding.recyclerView) {
             hasFixedSize()
             layoutManager = LinearLayoutManager(context)
-            adapter = adapterMovies
+            adapter = searchMoviesAdapter
+        }
+    }
 
-            addItemDecoration(
-                SpaceItemDecoration(
-                    space = context.resources.getDimensionPixelSize(R.dimen._1sdp),
-                    spaceBorderMultiplier = 1
-                )
-            )
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
+
+        searchView = menu.findItem(R.id.action_search).actionView as SearchView?
+        searchView?.isVisible = true
+        searchView?.queryHint = getString(R.string.search_hint)
+        searchView?.setIconifiedByDefault(false)
+        searchView?.setOnQueryTextListener(this)
+        searchView?.isIconified = false
+
+        searchView?.setOnCloseListener { false }
+
+        searchView?.setOnQueryTextFocusChangeListener { _, haveFocus ->
+            if(!haveFocus) {
+                searchView?.setQuery(lastQuery, true)
+            }
         }
 
-        adapterMovies.setOnItemClickListener(
-            onItemClick = object: RecyclerViewAdapter.OnItemClickListener<Movie>{
-                override fun onItemClick(
-                    adapter: RecyclerViewAdapter<Movie, *>,
-                    view: View,
-                    position: Int,
-                    item: Movie
-                ) {
-                    viewModel.selectMovie(item)
-                }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_search -> {
+                true
             }
-        )
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if(lastQuery != query) {
+            lastQuery = query
+            viewModel.searchMovies(searchQuery = lastQuery ?: "")
+        }
+        return false
+    }
+
+    override fun onQueryTextChange(text: String?): Boolean {
+        if(lastQuery != text) {
+            lastQuery = text
+            viewModel.searchMovies(searchQuery = lastQuery ?: "")
+        }
+        return false
     }
 }
