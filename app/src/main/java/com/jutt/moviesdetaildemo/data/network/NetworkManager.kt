@@ -1,6 +1,7 @@
 package com.jutt.moviesdetaildemo.data.network
 
-import com.jutt.moviesdetaildemo.data.models.Movie
+import com.jutt.moviesdetaildemo.BuildConfig
+import com.jutt.moviesdetaildemo.data.models.flickr.FlickrPhoto
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -18,7 +19,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NetworkManager @Inject constructor(private val catsAPIService: ApiService) {
+class NetworkManager @Inject constructor(private val apiService: ApiService) {
 
     fun <T> execute(call: Call<T>, callback: Callback<T>) {
         call.enqueue(callback)
@@ -59,5 +60,17 @@ class NetworkManager @Inject constructor(private val catsAPIService: ApiService)
 
     /////////////////////////////////////////////////////////////////
 
-    fun getCatTopFacts(): Call<List<Movie>> = catsAPIService.getCatTopFacts()
+    fun getImagesFromFlickr(
+        flickrAPIKey: String = BuildConfig.FLICKR_API_KEY,
+        searchText: String,
+        page: Int,
+        pageSize: Int
+    ): Call<PaginationPhotosResponse<List<FlickrPhoto>>> =
+        apiService.imagesSearchFlickr(
+            apiKey = flickrAPIKey,
+            query = searchText,
+            pageNo = page,
+            perPage = pageSize
+        )
+
 }

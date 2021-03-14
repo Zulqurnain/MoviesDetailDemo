@@ -1,5 +1,6 @@
 package com.jutt.moviesdetaildemo.data.network
 
+import com.google.gson.annotations.SerializedName
 import com.jutt.moviesdetaildemo.extensions.string
 import retrofit2.Response
 
@@ -38,3 +39,18 @@ inline fun <reified T, reified E> Response<T>.toNetworkResponse(bodyPredicate: R
         data = bodyPredicate(),
         responseCode = this.code()
     )
+
+class PaginationPhotosResponse<T>(
+    @SerializedName("stat") val status: String,
+    @SerializedName("code") val statusCode: Int,
+    val message: String?,
+    val photos: PaginationPhotosData<T>?,
+)
+
+class PaginationPhotosData<T>(
+    val page : Int,
+    val pages : Int,
+    val perpage : Int,
+    val total : Int,
+    val photo : T,
+)

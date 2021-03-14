@@ -33,7 +33,7 @@ object AppModule {
 
     @Reusable
     @Provides
-    fun provideCatsAPIClientBuild(): OkHttpClient.Builder = OkHttpClient.Builder()
+    fun provideAPIClientBuild(): OkHttpClient.Builder = OkHttpClient.Builder()
         .readTimeout(30, TimeUnit.SECONDS)
         .connectTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().also { interceptor ->
@@ -44,7 +44,7 @@ object AppModule {
 
     @Reusable
     @Provides
-    fun provideCatsAPIClient(builder: OkHttpClient.Builder): ApiService = Retrofit.Builder()
+    fun provideAPIClientService(builder: OkHttpClient.Builder): ApiService = Retrofit.Builder()
         .baseUrl(BuildConfig.API_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(builder.build())
