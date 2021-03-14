@@ -15,9 +15,4 @@ interface ApiService {
         @Path("PER_PAGE") perPage: Int
     ): Call<PaginationPhotosResponse<List<FlickrPhoto>>>
 
-//    @POST("/signup")
-//    fun signUp(
-//        @HeaderMap headers: Map<String, String>,
-//        @Body body: Map<String, @JvmSuppressWildcards Any?>
-//    ): Call<SignUpResponse>
 }

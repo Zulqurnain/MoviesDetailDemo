@@ -67,6 +67,8 @@ class HomeActivity : BaseNavigationActivity<ActivityHomeBinding>() {
             }
         })
 
+        viewModel.popupMessage.observe(this, ErrorMessageObserver(activity = this))
+
         viewModel.navigate.observe(this, NavigationObserver(listener = this))
 
         viewModel.selectedMovie.observe(this){

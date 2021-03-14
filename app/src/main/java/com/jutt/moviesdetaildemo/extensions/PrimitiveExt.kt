@@ -10,7 +10,6 @@ import android.text.style.URLSpan
 import android.text.util.Linkify
 import androidx.annotation.StringRes
 import androidx.core.text.HtmlCompat
-import com.jutt.moviesdetaildemo.extensions.timeInSeconds
 import java.text.DecimalFormatSymbols
 import java.util.*
 import kotlin.collections.HashMap
@@ -22,15 +21,6 @@ val Long.toSeconds get() = this / 1000
 val Long.toMillis get() = this * 1000
 val Long.toTimeString get() = this.toString().padStart(length = 2, padChar = '0')
 
-/**
- * Converts a long into Date object
- *
- * @receiver Long Expects long in seconds since 1970s
- * @return Date
- */
-fun Long.parseAsTime(): Date = Calendar.getInstance().apply {
-    timeInSeconds = this@parseAsTime
-}.time
 
 
 /**

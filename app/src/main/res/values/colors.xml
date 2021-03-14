@@ -16,6 +16,7 @@
     <color name="windowBackgroundColor">#FFF8F8F8</color>
     <color name="primaryTextColor">#484848</color>
     <color name="primaryTextColorInverse">#FFFFFFFF</color>
+    <color name="disabledTextColorInverse">#80000000</color>
     <color name="hintTextColor">#BEC2C9</color>
     <color name="hintTextColorInverse">#FFF8F8F8</color>
 
