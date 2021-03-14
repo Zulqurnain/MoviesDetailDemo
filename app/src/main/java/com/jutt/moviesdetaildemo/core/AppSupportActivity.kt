@@ -22,8 +22,6 @@ abstract class AppSupportActivity : AppCompatActivity(), EasyPermissions.Permiss
     SnackBarInterface, SnackBarAnchorViewInterface by SnackBarAnchorViewInterface.RootViewSnackBar,
     SnackBarViewHandler by SnackBarViewHandler.NoInternetSnackBar {
 
-    private val disposables = CompositeDisposable()
-
     private var toolbarBinding: LayoutToolbarBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +83,7 @@ abstract class AppSupportActivity : AppCompatActivity(), EasyPermissions.Permiss
     protected fun setUpToolBar(
         toolbarBinding: LayoutToolbarBinding,
         showDefaultTitle: Boolean = false,
-        showBackArrowOrHome: Boolean = true,
+        showBackArrowOrHome: Boolean = false,
         @StringRes titleRes: Int = R.string.empty
     ) {
         this.toolbarBinding = toolbarBinding

@@ -5,6 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.DeviceUtils
+import com.blankj.utilcode.util.PhoneUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.jutt.moviesdetaildemo.R
 import com.jutt.moviesdetaildemo.core.BaseFragment
 import com.jutt.moviesdetaildemo.core.RecyclerViewAdapter
@@ -71,7 +74,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     position: Int,
                     item: Movie
                 ) {
-                    viewModel.navigateToHomeDetails(item)
+                    viewModel.selectMovie(item)
                 }
             }
         )

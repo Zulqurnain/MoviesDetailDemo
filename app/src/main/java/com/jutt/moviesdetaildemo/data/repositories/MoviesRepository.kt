@@ -32,6 +32,10 @@ class MoviesRepository @Inject constructor(
 
     suspend fun syncFetchMoviesList() =
         withContext(dispatcher) {
+            /**
+             * We can Optimize more by adding more caching strategies here
+             * like `Do not load movies from assets unless database have zero values`
+             */
             val moviesAssets = getMoviesFromAssets()
             if (moviesAssets.size > databaseRepository.moviesCount()) {
                 databaseRepository.clearAllMovies()

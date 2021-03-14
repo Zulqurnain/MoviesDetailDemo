@@ -5,10 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jutt.moviesdetaildemo.R
 import com.jutt.moviesdetaildemo.architecture.EventObserver
+import com.jutt.moviesdetaildemo.core.AppNavigationActivity
+import com.jutt.moviesdetaildemo.core.AppSupportActivity
 import com.jutt.moviesdetaildemo.core.BaseFragment
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeBinding
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeDetailsBinding
@@ -36,9 +39,15 @@ class HomeDetailsFragment : BaseFragment<FragmentHomeDetailsBinding>() {
     }
 
     private fun setUpObservers() {
-        viewModel.selectedMovie.observe(viewLifecycleOwner,EventObserver{
+        viewModel.selectedMovie.observe(viewLifecycleOwner){
             binding.textView.text = it.toString()
-        })
+        }
+    }
+
+    override fun onNavigateBack(): Boolean {
+        val actionBar = (activity as AppNavigationActivity).supportActionBar ?: return super.onNavigateBack()
+        actionBar.setDisplayHomeAsUpEnabled(false)
+        return super.onNavigateBack()
     }
 
     private fun setUpViews() {

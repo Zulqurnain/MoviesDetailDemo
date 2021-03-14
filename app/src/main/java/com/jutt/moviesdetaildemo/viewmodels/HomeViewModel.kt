@@ -30,8 +30,8 @@ class HomeViewModel @Inject constructor(
 
     val moviesList: LiveData<List<Movie>> get() = moviesRepository.databaseRepository.getAllMovies()
 
-    private val _selectedMovie = MutableLiveData<Event<Movie>>()
-    val selectedMovie: LiveData<Event<Movie>> get() = _selectedMovie
+    private val _selectedMovie = MutableLiveData<Movie>()
+    val selectedMovie: LiveData<Movie> get() = _selectedMovie
 
     private val _toolbarVisible = MutableLiveData<Boolean>()
     val toolbarVisible: LiveData<Boolean> get() = _toolbarVisible
@@ -49,13 +49,16 @@ class HomeViewModel @Inject constructor(
         navigateToSection(Events.NAVIGATE_TO_HOME)
     }
 
-    fun navigateToHomeDetails(selectedMovie: Movie) {
+    fun navigateToHomeDetails() {
         navigateToSection(Events.NAVIGATE_TO_HOME_DETAILS)
-        _selectedMovie.postValue(Event.create(selectedMovie))
     }
 
     fun navigateToSection(eventContent: String) {
         _navigate.value = Event.create(content = eventContent)
+    }
+
+    fun selectMovie(selectedMovie: Movie){
+        _selectedMovie.postValue(selectedMovie)
     }
 
     fun fetchMoviesData() {
