@@ -87,12 +87,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryText
         searchView?.queryHint = getString(R.string.search_hint)
         searchView?.setIconifiedByDefault(false)
         searchView?.setOnQueryTextListener(this)
-        searchView?.isIconified = false
-
-        searchView?.setOnCloseListener { false }
 
         searchView?.setOnQueryTextFocusChangeListener { _, haveFocus ->
-            if(!haveFocus) {
+            if(!haveFocus && lastQuery.isNullOrEmpty().not()) {
                 searchView?.setQuery(lastQuery, true)
             }
         }
