@@ -4,8 +4,8 @@ import androidx.lifecycle.*
 import com.jutt.moviesdetaildemo.R
 import com.jutt.moviesdetaildemo.architecture.Event
 import com.jutt.moviesdetaildemo.data.models.Movie
-import com.jutt.moviesdetaildemo.data.repositories.MoviesRepository
 import com.jutt.moviesdetaildemo.data.repositories.DatabaseRepository
+import com.jutt.moviesdetaildemo.data.repositories.MoviesRepository
 import com.jutt.moviesdetaildemo.data.repositories.ResourcesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -13,9 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val resourcesRepository: ResourcesRepository,
-    private val moviesRepository: MoviesRepository,
-    private val databaseRepository: DatabaseRepository
+    resourcesRepository: ResourcesRepository,
+    private val moviesRepository: MoviesRepository
 ) : BaseViewModel(resourcesRepository) {
 
     object Events {
@@ -29,7 +28,7 @@ class HomeViewModel @Inject constructor(
     private val _successMessage = MutableLiveData<Event<String>>()
     val successMessage: LiveData<Event<String>> get() = _successMessage
 
-    val moviesList: LiveData<List<Movie>> get() = databaseRepository.getAllMovies()
+    val moviesList: LiveData<List<Movie>> get() = moviesRepository.databaseRepository.getAllMovies()
 
     private val _selectedMovie = MutableLiveData<Event<Movie>>()
     val selectedMovie: LiveData<Event<Movie>> get() = _selectedMovie
@@ -59,20 +58,10 @@ class HomeViewModel @Inject constructor(
         _navigate.value = Event.create(content = eventContent)
     }
 
-    fun syncMoviesFromLocal() {
+    fun fetchMoviesData() {
         viewModelScope.launch {
             _showLoader.value = true
-            val response = moviesRepository.fetchCatFactsFromAPI()
-            val listReturned = response.data ?: arrayListOf()
-            if (response.success && listReturned.isNotEmpty()) {
-                databaseRepository.clearAllMovies()
-                databaseRepository.upsertMovies(*listReturned.toTypedArray())
-            } else {
-                showErrorDialog(
-                    messageToShow = response.message,
-                    messageStrRes = R.string.error_message_server_error
-                )
-            }
+            moviesRepository.syncFetchMoviesList()
             _showLoader.value = false
         }
     }

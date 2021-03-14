@@ -25,7 +25,7 @@ class HomeDetailsFragment : BaseFragment<FragmentHomeDetailsBinding>() {
         get() = R.string.app_name
 
     companion object {
-        fun newInstance() = HomeFragment()
+        fun newInstance() = HomeDetailsFragment()
     }
 
     private val viewModel by activityViewModels<HomeViewModel>()

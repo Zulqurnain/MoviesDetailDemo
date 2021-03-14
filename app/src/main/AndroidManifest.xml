@@ -19,11 +19,9 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <activity
-            android:name=".view.activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:name=".view.activities.HomeActivity" />
         <activity
             android:name=".view.activities.SplashActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
