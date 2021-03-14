@@ -11,6 +11,7 @@ import com.jutt.moviesdetaildemo.core.RecyclerViewAdapter
 import com.jutt.moviesdetaildemo.data.models.Movie
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeBinding
 import com.jutt.moviesdetaildemo.view.adapters.MoviesListAdapter
+import com.jutt.moviesdetaildemo.view.decorations.SpaceItemDecoration
 import com.jutt.moviesdetaildemo.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,12 +35,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         setUpObservers()
         setUpViews()
 
-        viewModel.syncMoviesFromLocal()
+        viewModel.fetchMoviesData()
     }
 
     private fun setUpObservers() {
         viewModel.moviesList.observe(viewLifecycleOwner){
             adapterMovies.set(it.toMutableList())
+            adapterMovies.notifyDataSetChanged()
         }
     }
 
@@ -52,6 +54,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             hasFixedSize()
             layoutManager = LinearLayoutManager(context)
             adapter = adapterMovies
+
+            addItemDecoration(
+                SpaceItemDecoration(
+                    space = context.resources.getDimensionPixelSize(R.dimen._1sdp),
+                    spaceBorderMultiplier = 1
+                )
+            )
         }
 
         adapterMovies.setOnItemClickListener(

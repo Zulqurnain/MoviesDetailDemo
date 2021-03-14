@@ -9,6 +9,8 @@ import javax.inject.Singleton
 class DatabaseRepository @Inject constructor(private val database: AppDatabase) {
     fun getAllMovies()  = database.moviesDao().loadAll()
 
+    suspend fun moviesCount() = database.moviesDao().getCount()
+
     suspend fun clearAllMovies() {
         database.moviesDao().clearTable()
     }

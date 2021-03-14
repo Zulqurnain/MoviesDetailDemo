@@ -15,14 +15,11 @@ abstract class BaseViewModel constructor(
 
     protected val _showLoader = MutableLiveData<Boolean>()
     protected val _popupMessage = MutableLiveData<Event<AlertDialogParams>>()
-    protected val _showOTPDialog = MutableLiveData<Event<Boolean>>()
 
     val showLoader: LiveData<Boolean>
         get() = _showLoader
     val popupMessage: LiveData<Event<AlertDialogParams>>
         get() = _popupMessage
-    val showOTPDialog: LiveData<Event<Boolean>>
-        get() = _showOTPDialog
 
     fun showErrorDialog(
         @StringRes messageStrRes: Int,

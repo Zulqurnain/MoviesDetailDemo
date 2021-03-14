@@ -16,6 +16,9 @@ abstract class MoviesDao : BaseDao<Movie>() {
     @Query("SELECT * FROM Movie")
     abstract fun loadAll(): LiveData<List<Movie>>
 
+    @Query("SELECT COUNT(id) FROM Movie")
+    abstract fun getCount(): Int
+
     @Query("DELETE FROM Movie")
     abstract suspend fun clearTable()
 }
