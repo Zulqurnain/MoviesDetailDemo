@@ -1,11 +1,11 @@
 package com.jutt.moviesdetaildemo.view.fragments
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jutt.moviesdetaildemo.R
@@ -15,7 +15,6 @@ import com.jutt.moviesdetaildemo.core.AppSupportActivity
 import com.jutt.moviesdetaildemo.core.BaseFragment
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeBinding
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeDetailsBinding
-import com.jutt.moviesdetaildemo.view.adapters.MoviesListAdapter
 import com.jutt.moviesdetaildemo.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,6 +47,12 @@ class HomeDetailsFragment : BaseFragment<FragmentHomeDetailsBinding>() {
         val actionBar = (activity as AppNavigationActivity).supportActionBar ?: return super.onNavigateBack()
         actionBar.setDisplayHomeAsUpEnabled(false)
         return super.onNavigateBack()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        val searchView: SearchView? = menu.findItem(R.id.action_search).actionView as SearchView?
+        searchView?.isVisible = false
     }
 
     private fun setUpViews() {

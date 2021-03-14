@@ -16,12 +16,16 @@ import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 import kotlin.math.min
 
-val Boolean.toInt get() = if (this) 1 else 0
-val Long.toSeconds get() = this / 1000
-val Long.toMillis get() = this * 1000
-val Long.toTimeString get() = this.toString().padStart(length = 2, padChar = '0')
-
-
+/**
+ * Helper method for swapping places in array
+ * @param idx index of the first element
+ * @param idy index of the second element
+ */
+fun <T : Any> ArrayList<T>.swap(idx: Int, idy: Int) {
+    val temp = this[idx]
+    this[idx] = this[idy]
+    this[idy] = temp
+}
 
 /**
  *
