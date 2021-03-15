@@ -7,12 +7,9 @@ import retrofit2.http.*
 
 interface ApiService {
 
-    @GET("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key={API_KEY}&format=json&nojsoncallback=1&text={QUERY}&page={PAGE_NO}&per_page={PER_PAGE}")
+    @GET("https://api.flickr.com/services/rest/")
     fun imagesSearchFlickr(
-        @Path("API_KEY") apiKey: String,
-        @Path("QUERY") query: String,
-        @Path("PAGE_NO") pageNo: Int,
-        @Path("PER_PAGE") perPage: Int
+        @QueryMap options:Map<String, @JvmSuppressWildcards Any?>,
     ): Call<PaginationPhotosResponse<List<FlickrPhoto>>>
 
 }

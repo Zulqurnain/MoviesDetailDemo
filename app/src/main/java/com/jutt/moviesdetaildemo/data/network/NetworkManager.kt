@@ -65,12 +65,17 @@ class NetworkManager @Inject constructor(private val apiService: ApiService) {
         searchText: String,
         page: Int,
         pageSize: Int
-    ): Call<PaginationPhotosResponse<List<FlickrPhoto>>> =
-        apiService.imagesSearchFlickr(
-            apiKey = flickrAPIKey,
-            query = searchText,
-            pageNo = page,
-            perPage = pageSize
+    ): Call<PaginationPhotosResponse<List<FlickrPhoto>>> {
+        val body = mutableMapOf<String,Any?>(
+            "method" to "flickr.photos.search",
+            "api_key" to flickrAPIKey,
+            "format" to "json",
+            "nojsoncallback" to 1,
+            "text" to searchText,
+            "page" to page,
+            "per_page" to pageSize
         )
+        return apiService.imagesSearchFlickr(options = body)
+    }
 
 }

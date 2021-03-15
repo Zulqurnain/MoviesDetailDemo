@@ -13,8 +13,11 @@ import com.jutt.moviesdetaildemo.architecture.EventObserver
 import com.jutt.moviesdetaildemo.core.AppNavigationActivity
 import com.jutt.moviesdetaildemo.core.AppSupportActivity
 import com.jutt.moviesdetaildemo.core.BaseFragment
+import com.jutt.moviesdetaildemo.data.models.Movie
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeBinding
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeDetailsBinding
+import com.jutt.moviesdetaildemo.utils.loadImageFromUrl
+import com.jutt.moviesdetaildemo.view.adapters.FlickrImagesPagingAdapter
 import com.jutt.moviesdetaildemo.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,15 +35,26 @@ class HomeDetailsFragment : BaseFragment<FragmentHomeDetailsBinding>() {
 
     private val viewModel by activityViewModels<HomeViewModel>()
 
+    private val flickrImagesPagingAdapter by lazy { FlickrImagesPagingAdapter() }
+
     override fun onReady() {
         setUpObservers()
-        setUpViews()
     }
 
     private fun setUpObservers() {
         viewModel.selectedMovie.observe(viewLifecycleOwner){
-            binding.textView.text = it.toString()
+            setUpViews(it)
         }
+        viewModel.movieCoverPhotoGot.observe(viewLifecycleOwner){
+            binding.ivCoverImage.loadImageFromUrl(
+                url = it.urlOfImage ?: "",
+                placeHolder = R.drawable.vertical_cover_style_gradient
+            )
+        }
+
+        viewModel.startPagingFickrPhotos.observe(viewLifecycleOwner, EventObserver {
+            if (it) setUpFlickrImagesPaging(flickrImagesPagingAdapter)
+        })
     }
 
     override fun onNavigateBack(): Boolean {
@@ -55,7 +69,31 @@ class HomeDetailsFragment : BaseFragment<FragmentHomeDetailsBinding>() {
         searchView?.isVisible = false
     }
 
-    private fun setUpViews() {
+    private fun setUpViews(movie: Movie) {
+        binding.castLabel.text = getString(R.string.movie_cast)
+        binding.genreLabel.text = getString(R.string.genre_label)
+
+        binding.movieTitle.text = movie.title
+        binding.castText.text = movie.cast.joinToString(separator = " , ")
+        binding.genresText.text = movie.genres.joinToString(separator = " , ")
+
+        binding.movieRating.rating = movie.rating.toFloat()
+
+        viewModel.getMovieSingleImageFromFlickr(movie.title)
+
+        with(binding.recyclerView){
+            adapter = flickrImagesPagingAdapter
+        }
+
+        viewModel.fetchImagesForString(
+            searchQuery = movie.title
+        )
+    }
+
+    private fun setUpFlickrImagesPaging(paginatedAdapter: FlickrImagesPagingAdapter) {
+        viewModel.paginatedFickrPhotos.observe(viewLifecycleOwner, {
+            paginatedAdapter.submitList(it)
+        })
     }
 
 }
