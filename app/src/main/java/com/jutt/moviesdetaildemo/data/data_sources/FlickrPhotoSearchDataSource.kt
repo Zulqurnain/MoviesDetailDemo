@@ -90,7 +90,7 @@ class FlickrPhotoSearchDataSource(
                         return@map with(it){
                             FlickrMappedPhoto(
                                 id = it.id,
-                                urlOfImage = "http://farm{$farm}.static.flickr.com/{$server}/{$id}_{$secret}.jpg",
+                                urlOfImage = "http://farm"+farm+".static.flickr.com/"+server+"/"+id+"_"+secret+".jpg",
                                 title = it.title
                             )
                         }

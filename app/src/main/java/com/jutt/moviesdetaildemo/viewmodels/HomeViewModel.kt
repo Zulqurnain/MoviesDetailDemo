@@ -79,7 +79,7 @@ class HomeViewModel @Inject constructor(
         _navigate.value = Event.create(content = eventContent)
     }
 
-    fun selectMovie(selectedMovie: Movie){
+    fun selectMovie(selectedMovie: Movie) {
         _selectedMovie.postValue(selectedMovie)
     }
 
@@ -91,14 +91,15 @@ class HomeViewModel @Inject constructor(
             _showLoader.value = false
         }
     }
+
     fun searchMovies(searchQuery: String) {
         viewModelScope.launch {
-            if(searchQuery.isEmpty()){
+            if (searchQuery.isEmpty()) {
                 _showLoader.postValue(true)
                 _searchedMovies.postValue(listOf())
                 _moviesList.postValue(moviesList.value)
                 _showLoader.postValue(false)
-            }else {
+            } else {
                 _searchedMovies.postValue(
                     moviesRepository.searchMovies(searchQuery)
                 )
@@ -129,6 +130,20 @@ class HomeViewModel @Inject constructor(
         _toolbarVisible.postValue(visible)
     }
 
+    fun fetchImagesForString(
+        searchQuery: String,
+        forcedReload: Boolean = true
+    ) {
+        initFlickrImagesPagination(
+            searchQuery = searchQuery,
+            forcedReload
+        )
+        if (startPagingFickrPhotos.value == null) {
+            startPagingFickrPhotos.value = Event.create(content = true)
+        }
+        flickrPhotosDataFactory.value?.flickrImagesDataSourceLiveData?.value?.invalidate()
+    }
+
     /**
      * [IMPORTANT] Only call this method first time per screen
      * because it resets attributes of pagination and your items will reload from scratch
@@ -153,6 +168,7 @@ class HomeViewModel @Inject constructor(
          */
         val config = paginationConfig.build()
         val dataFactory = FlickrPhotoSearchFactory(
+            searchText = searchQuery,
             networkManager = moviesRepository.networkManager,
             showLoader = _showLoader
         )
@@ -168,6 +184,6 @@ class HomeViewModel @Inject constructor(
         /**
          * Invalidate the data
          */
-        flickrPhotosDataFactory.value?.refresh()
+//        flickrPhotosDataFactory.value?.refresh()
     }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AppCompatImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/iv_image"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_150sdp"
+    android:contentDescription="@string/app_name"
+    android:scaleType="fitXY"/>

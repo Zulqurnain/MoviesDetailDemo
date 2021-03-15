@@ -17,6 +17,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/layout_text_item" />
+        tools:listitem="@layout/layout_header_year" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
