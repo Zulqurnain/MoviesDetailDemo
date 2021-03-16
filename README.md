@@ -2,7 +2,7 @@
 This example is specifically to practice MVVM with tablet Duel-Pane Mode A.K.A Master Detail View in Android Without Using Navigation Componenet
 Support Master - Detail pattern as well as Mobile view.
 
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+![Image of Yaktocat](https://github.com/Zulqurnain/MoviesDetailDemo/blob/main/graphics/untitled.gif)
 
 
 - One Activity Only!!!
