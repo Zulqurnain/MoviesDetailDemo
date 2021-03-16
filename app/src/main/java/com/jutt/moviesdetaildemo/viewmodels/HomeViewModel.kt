@@ -9,6 +9,7 @@ import com.jutt.moviesdetaildemo.architecture.Event
 import com.jutt.moviesdetaildemo.data.data_sources.FlickrPhotoSearchFactory
 import com.jutt.moviesdetaildemo.data.models.FlickrMappedPhoto
 import com.jutt.moviesdetaildemo.data.models.Movie
+import com.jutt.moviesdetaildemo.data.repositories.MoviesLogicOperations
 import com.jutt.moviesdetaildemo.data.repositories.MoviesRepository
 import com.jutt.moviesdetaildemo.data.repositories.ResourcesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,9 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    resourcesRepository: ResourcesRepository,
-    private val moviesRepository: MoviesRepository
-) : BaseViewModel(resourcesRepository) {
+    private val moviesRepository: MoviesLogicOperations
+) : BaseViewModel() {
 
     object Events {
         const val NAVIGATE_TO_HOME: String = "NAVIGATE_TO_HOME"
@@ -100,9 +100,8 @@ class HomeViewModel @Inject constructor(
                 _moviesList.postValue(moviesList.value)
                 _showLoader.postValue(false)
             } else {
-                _searchedMovies.postValue(
-                    moviesRepository.searchMovies(searchQuery)
-                )
+                val searches = moviesRepository.searchMovies(searchQuery,5)
+                _searchedMovies.postValue(searches)
             }
         }
     }
@@ -167,14 +166,15 @@ class HomeViewModel @Inject constructor(
          * Configuring Pagination
          */
         val config = paginationConfig.build()
-        val dataFactory = FlickrPhotoSearchFactory(
-            searchText = searchQuery,
-            networkManager = moviesRepository.networkManager,
-            showLoader = _showLoader
-        )
 
-        flickrPhotosDataFactory.value = dataFactory
-        _flickrPhotosPaginatedData = LivePagedListBuilder(dataFactory, config).build()
+        moviesRepository.getFlickrPagingFactory()?.setUpInit(searchText = searchQuery,showLoader = _showLoader)
+
+        flickrPhotosDataFactory.value = moviesRepository.getFlickrPagingFactory()
+        flickrPhotosDataFactory.value?.let {
+            _flickrPhotosPaginatedData = LivePagedListBuilder(it, config).build()
+        } ?: kotlin.run {
+            return@run
+        }
 
         /**
          * refreshing list to update LIVEDATA so UI will update

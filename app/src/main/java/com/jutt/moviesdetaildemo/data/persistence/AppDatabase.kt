@@ -10,6 +10,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.jutt.moviesdetaildemo.data.models.Movie
 import com.jutt.moviesdetaildemo.data.persistence.daos.MoviesDao
+import java.util.concurrent.Executors
 
 @Database(
     version = 1,
@@ -29,6 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
             context: Context,
         ): AppDatabase = Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
             .fallbackToDestructiveMigration()
+            .setTransactionExecutor(Executors.newSingleThreadExecutor())
             .addCallback(object : Callback() {
                 override fun onDestructiveMigration(db: SupportSQLiteDatabase) {
                     super.onDestructiveMigration(db)

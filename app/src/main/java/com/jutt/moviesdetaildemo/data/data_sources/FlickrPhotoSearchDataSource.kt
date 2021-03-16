@@ -5,13 +5,22 @@ import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import com.jutt.moviesdetaildemo.data.models.FlickrMappedPhoto
 import com.jutt.moviesdetaildemo.data.network.NetworkManager
+import javax.inject.Inject
 
-class FlickrPhotoSearchFactory(
-    val networkManager: NetworkManager,
-    val searchText: String? = "",
-    val showLoader: MutableLiveData<Boolean>
+class FlickrPhotoSearchFactory @Inject constructor(
+    val networkManager: NetworkManager
 ) : DataSource.Factory<Int, FlickrMappedPhoto>() {
+
+    var searchText: String = ""
+    private var showLoader: MutableLiveData<Boolean> = MutableLiveData()
+
     var flickrImagesDataSourceLiveData = MutableLiveData<FlickrPhotoSearchDataSource>()
+
+    fun setUpInit(searchText: String,showLoader: MutableLiveData<Boolean>){
+        this.searchText = searchText ?: ""
+        this.showLoader = showLoader
+        create()
+    }
 
     override fun create(): DataSource<Int, FlickrMappedPhoto> {
         val source =

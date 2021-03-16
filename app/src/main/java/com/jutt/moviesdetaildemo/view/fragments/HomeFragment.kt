@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.abed.kotlin_recycler.adapters.ViewTypeRecyclerAdapter
 import com.blankj.utilcode.util.KeyboardUtils
 import com.jutt.moviesdetaildemo.R
+import com.jutt.moviesdetaildemo.core.AppNavigationActivity
 import com.jutt.moviesdetaildemo.core.BaseFragment
 import com.jutt.moviesdetaildemo.data.models.Movie
 import com.jutt.moviesdetaildemo.databinding.FragmentHomeBinding
@@ -23,6 +24,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), SearchView.OnQueryText
 
     override val titleResId: Int
         get() = R.string.app_name
+
+    override fun getTitle(): String? {
+        val isLandScape = activity?.findViewById<View>(R.id.contentDetail) != null
+        return if(!isLandScape) "" else super.getTitle()
+    }
 
     companion object {
         fun newInstance() = HomeFragment()

@@ -4,6 +4,7 @@ import com.blankj.utilcode.util.JsonUtils
 import com.blankj.utilcode.util.ResourceUtils
 import com.jutt.moviesdetaildemo.application.Contants.ASSETS_MOVIES_LIST_FIELD
 import com.jutt.moviesdetaildemo.application.Contants.ASSETS_PATH_FOR_MOVIES
+import com.jutt.moviesdetaildemo.data.data_sources.FlickrPhotoSearchFactory
 import com.jutt.moviesdetaildemo.data.models.FlickrMappedPhoto
 import com.jutt.moviesdetaildemo.data.models.Movie
 import com.jutt.moviesdetaildemo.data.network.NetworkManager
@@ -23,19 +24,15 @@ import javax.inject.Singleton
 
 @Singleton
 class MoviesRepository @Inject constructor(
-    val networkManager: NetworkManager,
+    private val flickrPhotosFactory: FlickrPhotoSearchFactory,
+    private val networkManager: NetworkManager,
     private val databaseRepository: DatabaseRepository,
     @Named(NamedHilts.REPOSITORY_DISPATCHER)
     private val dispatcher: CoroutineDispatcher
-) {
+) : MoviesLogicOperations() {
 
-    suspend fun refreshMoviesTableWithOldData() =
-        withContext(dispatcher){
-            databaseRepository.upsertMovies(*emptyArray())
-        }
-
-    suspend fun syncFetchMoviesList() =
-        withContext(dispatcher) {
+    override suspend fun syncFetchMoviesList(): List<Movie> {
+        return withContext(dispatcher) {
             /**
              * We can Optimize more by adding more caching strategies here
              * like `Do not load movies from assets unless database have zero values`
@@ -44,33 +41,88 @@ class MoviesRepository @Inject constructor(
             if (moviesAssets.size > databaseRepository.moviesCount()) {
                 sortMoviesBeforeStoringByYear(moviesAssets)
                 databaseRepository.clearAllMovies()
-                databaseRepository.upsertMovies(*moviesAssets.toTypedArray())
+                /**
+                 * Why Reversed ? Becasue we want latest movie first and we and already sorted from
+                 * Low to High
+                 */
+                databaseRepository.upsertMovies(*moviesAssets.asReversed().toTypedArray())
             }
             return@withContext databaseRepository.getAllMovies()
         }
-    suspend fun searchMovies(searchQuery: String, maximumRecordsPerYear: Int = 5) =
-        withContext(dispatcher) {
-            val listOfMappedMovies: MutableList<Any> = mutableListOf()
-            val moviesByYearMap =  databaseRepository.getMoviesByQuery(
-                searchQuery,
-                maximumRecordsPerYear
-            ).groupBy { it.year }
+    }
 
-            moviesByYearMap.keys.forEach { year ->
-                listOfMappedMovies.add(year.toString())
-                listOfMappedMovies.addAll(
-                    moviesByYearMap[year] ?: listOf()
-                )
-            }
-            return@withContext listOfMappedMovies
+    override suspend fun searchMovies(searchQuery: String, maximumRecordsPerYear: Int) =
+        withContext(dispatcher) {
+            return@withContext getListOfMoviesSortedByYearSortedRating(
+                listOfFetchedMovies = databaseRepository.getAllMovies().toMutableList(),
+                searchQuery = searchQuery,
+                maxRecordsPerYear = maximumRecordsPerYear
+            )
         }
+
+    override suspend fun getSingleImageFromFlickr(movieName: String) =
+        withContext(dispatcher) {
+            val response = networkManager.execute(
+                networkManager.getImagesFromFlickr(
+                    searchText = movieName,
+                    page = 1,
+                    pageSize = 1
+                )
+            )
+            val listOfPhotos = response.body()?.photos?.photo ?: listOf()
+            if (!listOfPhotos.isNullOrEmpty()) {
+                val firstOne = listOfPhotos[0]
+                return@withContext response.toNetworkResponse {
+                    FlickrMappedPhoto(
+                        id = firstOne.id,
+                        urlOfImage = "http://farm" + firstOne.farm + ".static.flickr.com/" + firstOne.server + "/" + firstOne.id + "_" + firstOne.secret + ".jpg",
+                        title = firstOne.title
+                    )
+                }
+            }
+            return@withContext NetworkResponse<FlickrMappedPhoto>(
+                success = false,
+                message = response.string
+            )
+        }
+
+    /**
+     * Get List of Movies from Json File Provided in Assets
+     *
+     * @return
+     */
+    override suspend fun getMoviesFromAssets(): ArrayList<Movie> {
+        return try {
+            Json.decodeFromString(
+                JsonUtils.getJSONArray(
+                    ResourceUtils.readAssets2String(ASSETS_PATH_FOR_MOVIES),
+                    ASSETS_MOVIES_LIST_FIELD,
+                    JSONArray()
+                ).toString()
+            ) ?: arrayListOf()
+        } catch (e: Exception) {
+            arrayListOf()
+        }
+    }
+
+    override fun getFlickrPagingFactory(): FlickrPhotoSearchFactory? = flickrPhotosFactory
+}
+
+abstract class MoviesLogicOperations {
+
+    abstract suspend fun syncFetchMoviesList(): List<Movie>
+
+    abstract suspend fun searchMovies(
+        searchQuery: String,
+        maximumRecordsPerYear: Int
+    ): List<Any>
 
     /**
      * I am Using Shell Sort
      *
      * @param movies
      */
-    private fun sortMoviesBeforeStoringByYear(movies: ArrayList<Movie>) {
+    protected fun sortMoviesBeforeStoringByYear(movies: ArrayList<Movie>) {
         /**
          * Why Use Shell Sort?
          * Because It have good performance on worst case scenario and
@@ -89,48 +141,35 @@ class MoviesRepository @Inject constructor(
         }
     }
 
-    suspend fun getSingleImageFromFlickr(movieName: String) =
-        withContext(dispatcher) {
-            val response = networkManager.execute(
-                networkManager.getImagesFromFlickr(
-                    searchText = movieName,
-                    page = 1,
-                    pageSize = 1
-                )
-            )
-            val listOfPhotos = response.body()?.photos?.photo ?: listOf()
-            if(!listOfPhotos.isNullOrEmpty()){
-                val firstOne = listOfPhotos[0]
-                return@withContext response.toNetworkResponse {
-                    FlickrMappedPhoto(
-                        id = firstOne.id,
-                        urlOfImage = "http://farm"+firstOne.farm+".static.flickr.com/"+firstOne.server+"/"+firstOne.id+"_"+firstOne.secret+".jpg",
-                        title = firstOne.title
-                    )
-                }
+    protected fun getListOfMoviesSortedByYearSortedRating(
+        listOfFetchedMovies: MutableList<Movie>,
+        searchQuery: String,
+        maxRecordsPerYear: Int
+    ): List<Any> {
+        return listOfFetchedMovies // Supposing list is already sorted because I've done each time item is inserted
+            .filter { it.title.contains(searchQuery) }
+            .groupBy { it.year }
+            .mapValues {
+                it.value
+                    .sortedBy { v -> v.rating }
+                    .takeLast(maxRecordsPerYear)
+            }.toSortedMap(reverseOrder())
+            .flatMap {
+                val list: MutableList<Any> = mutableListOf()
+                list.add(it.key.toString())
+                list.addAll(it.value)
+                return@flatMap list
             }
-            return@withContext NetworkResponse<FlickrMappedPhoto>(
-                success = false,
-                message = response.string
-            )
-        }
+    }
+
+    abstract suspend fun getSingleImageFromFlickr(movieName: String): NetworkResponse<FlickrMappedPhoto>
 
     /**
      * Get List of Movies from Json File Provided in Assets
      *
      * @return
      */
-    private fun getMoviesFromAssets(): ArrayList<Movie> {
-        return try {
-            Json.decodeFromString(
-                JsonUtils.getJSONArray(
-                    ResourceUtils.readAssets2String(ASSETS_PATH_FOR_MOVIES),
-                    ASSETS_MOVIES_LIST_FIELD,
-                    JSONArray()
-                ).toString()
-            ) ?: arrayListOf()
-        } catch (e: Exception) {
-            arrayListOf()
-        }
-    }
+    protected abstract suspend fun getMoviesFromAssets(): ArrayList<Movie>
+
+    abstract fun getFlickrPagingFactory(): FlickrPhotoSearchFactory?
 }
