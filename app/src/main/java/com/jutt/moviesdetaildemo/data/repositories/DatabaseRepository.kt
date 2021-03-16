@@ -15,13 +15,9 @@ class DatabaseRepository @Inject constructor(
 ) {
     suspend fun getAllMovies() = database.moviesDao().loadAll()
 
-    suspend fun getMoviesByQuery(query: String, maximumRecordPerYear: Int) = database.moviesDao().loadMoviesByQuery(query, maximumRecordPerYear)
-
     suspend fun moviesCount() = database.moviesDao().getCount()
 
     suspend fun clearAllMovies() = database.moviesDao().clearTable()
 
     suspend fun upsertMovies(vararg items: Movie) = database.moviesDao().insertOrUpdate(items.toList())
-
-    suspend fun addAllMovies(facts: List<Movie>) = database.moviesDao().insertOrUpdate(facts)
 }

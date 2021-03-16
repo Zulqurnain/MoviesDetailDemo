@@ -5,16 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blankj.utilcode.util.StringUtils
 import com.jutt.moviesdetaildemo.architecture.Event
 import com.jutt.moviesdetaildemo.data.repositories.ResourcesRepository
 import com.jutt.moviesdetaildemo.helper.AlertDialogParams
 import kotlinx.coroutines.cancel
-abstract class BaseViewModel constructor(
-    private val resourcesRepository: ResourcesRepository
-) : ViewModel() {
+abstract class BaseViewModel : ViewModel() {
 
     protected val _showLoader = MutableLiveData<Boolean>()
-    protected val _popupMessage = MutableLiveData<Event<AlertDialogParams>>()
+    private val _popupMessage = MutableLiveData<Event<AlertDialogParams>>()
 
     val showLoader: LiveData<Boolean>
         get() = _showLoader
@@ -30,8 +29,8 @@ abstract class BaseViewModel constructor(
         _popupMessage.value =
             Event.create(
                 content = AlertDialogParams(
-                    title = title ?: titleRes?.let { resourcesRepository.getString(it)} ?: "",
-                    message = messageToShow ?: resourcesRepository.getString(messageStrRes)
+                    title = title ?: titleRes?.let { StringUtils.getString(it)} ?: "",
+                    message = messageToShow ?: StringUtils.getString(messageStrRes)
                 )
             )
     }

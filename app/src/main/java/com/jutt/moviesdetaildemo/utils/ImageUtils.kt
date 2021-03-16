@@ -33,15 +33,6 @@ fun ImageView.loadImageFromUrl(
     }
 }
 
-fun ImageView.loadImageFromUrl(url: String, placeHolder: Drawable, radius: Int = 0) {
-    if (shouldStartLoadImage()) {
-        Glide.with(this)
-            .load(url)
-            .apply(getRequestOptions(radius, placeHolder))
-            .into(this)
-    }
-}
-
 fun ImageView.loadImageFromDrawable(
     @DrawableRes drawable: Int,
     @DrawableRes placeHolder: Int? = null,
@@ -50,76 +41,6 @@ fun ImageView.loadImageFromDrawable(
     if (shouldStartLoadImage()) {
         Glide.with(this)
             .load(drawable)
-            .apply(getRequestOptions(radius, placeHolder))
-            .into(this)
-    }
-}
-
-fun ImageView.loadImageFromDrawable(
-    @DrawableRes drawable: Int,
-    placeHolder: Drawable,
-    radius: Int = 0
-) {
-    if (shouldStartLoadImage()) {
-        Glide.with(this)
-            .load(drawable)
-            .apply(getRequestOptions(radius, placeHolder))
-            .into(this)
-    }
-}
-
-fun ImageView.loadImageFromDrawable(
-    drawable: Drawable,
-    @DrawableRes placeHolder: Int? = null,
-    radius: Int = 0
-) {
-    if (shouldStartLoadImage()) {
-        Glide.with(this)
-            .load(drawable)
-            .apply(getRequestOptions(radius, placeHolder))
-            .into(this)
-    }
-}
-
-fun ImageView.loadImageFromDrawable(drawable: Drawable, placeHolder: Drawable, radius: Int = 0) {
-    if (shouldStartLoadImage()) {
-        Glide.with(this)
-            .load(drawable)
-            .apply(getRequestOptions(radius, placeHolder))
-            .into(this)
-    }
-}
-
-fun ImageView.loadImageFromFile(
-    file: File,
-    @DrawableRes placeHolder: Int? = null,
-    radius: Int = 0
-) {
-    if (shouldStartLoadImage()) {
-        Glide.with(this)
-            .load(Uri.fromFile(file))
-            .apply(getRequestOptions(radius, placeHolder))
-            .into(this)
-    }
-}
-
-fun ImageView.loadImageFromBitmap(
-    bitmap: Bitmap,
-    @DrawableRes placeHolder: Int? = null,
-    radius: Int = 0
-) {
-    if (shouldStartLoadImage()) {
-        Glide.with(this)
-            .load(bitmap)
-            .apply(getRequestOptions(radius, placeHolder))
-            .into(this)
-    }
-}
-
-fun ImageView.loadImageFromBitmap(bitmap: Bitmap, placeHolder: Drawable, radius: Int = 0) {
-    if (shouldStartLoadImage()) {
-        Glide.with(this)
-            .load(bitmap)
             .apply(getRequestOptions(radius, placeHolder))
             .into(this)
     }
@@ -135,14 +56,6 @@ private fun getRequestOptions(radius: Int, @DrawableRes placeHolder: Int?) =
             placeholder(it)
         }
     }
-
-private fun getRequestOptions(radius: Int, drawable: Drawable?) = RequestOptions().apply {
-    if (radius > 0) {
-        transform(CenterCrop(), RoundedCorners(radius))
-    }
-
-    placeholder(drawable)
-}
 
 private fun ImageView.shouldStartLoadImage(): Boolean {
     val activity = this.context as? Activity

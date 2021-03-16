@@ -2,9 +2,14 @@ package com.jutt.moviesdetaildemo.di
 
 import android.content.Context
 import com.jutt.moviesdetaildemo.BuildConfig
+import com.jutt.moviesdetaildemo.data.data_sources.FlickrPhotoSearchFactory
 import com.jutt.moviesdetaildemo.data.network.ApiService
+import com.jutt.moviesdetaildemo.data.network.NetworkManager
 import com.jutt.moviesdetaildemo.data.persistence.AppDatabase
 import com.jutt.moviesdetaildemo.data.persistence.daos.MoviesDao
+import com.jutt.moviesdetaildemo.data.repositories.DatabaseRepository
+import com.jutt.moviesdetaildemo.data.repositories.MoviesLogicOperations
+import com.jutt.moviesdetaildemo.data.repositories.MoviesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -41,6 +46,16 @@ object AppModule {
                 if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                 else HttpLoggingInterceptor.Level.NONE
         })
+
+    @Reusable
+    @Provides
+    fun provideMovieLogicOperations(
+        flickrPhotosFactory: FlickrPhotoSearchFactory,
+        networkManager: NetworkManager,
+        databaseRepository: DatabaseRepository,
+        @Named(NamedHilts.REPOSITORY_DISPATCHER)
+        dispatcher: CoroutineDispatcher
+    ) = MoviesRepository(flickrPhotosFactory,networkManager, databaseRepository, dispatcher) as MoviesLogicOperations
 
     @Reusable
     @Provides

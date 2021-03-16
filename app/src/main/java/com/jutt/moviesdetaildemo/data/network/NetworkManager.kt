@@ -21,10 +21,6 @@ import javax.inject.Singleton
 @Singleton
 class NetworkManager @Inject constructor(private val apiService: ApiService) {
 
-    fun <T> execute(call: Call<T>, callback: Callback<T>) {
-        call.enqueue(callback)
-    }
-
     fun <T> execute(call: Call<T>): Response<T?> {
         return try {
             val response = call.execute()
