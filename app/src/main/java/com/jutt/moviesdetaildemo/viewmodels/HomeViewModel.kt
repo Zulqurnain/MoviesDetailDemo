@@ -10,8 +10,6 @@ import com.jutt.moviesdetaildemo.data.data_sources.FlickrPhotoSearchFactory
 import com.jutt.moviesdetaildemo.data.models.FlickrMappedPhoto
 import com.jutt.moviesdetaildemo.data.models.Movie
 import com.jutt.moviesdetaildemo.data.repositories.MoviesLogicOperations
-import com.jutt.moviesdetaildemo.data.repositories.MoviesRepository
-import com.jutt.moviesdetaildemo.data.repositories.ResourcesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
