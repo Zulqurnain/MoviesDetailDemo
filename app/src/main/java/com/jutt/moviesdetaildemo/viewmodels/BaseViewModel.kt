@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.StringUtils
 import com.jutt.moviesdetaildemo.architecture.Event
-import com.jutt.moviesdetaildemo.data.repositories.ResourcesRepository
 import com.jutt.moviesdetaildemo.helper.AlertDialogParams
 import kotlinx.coroutines.cancel
 abstract class BaseViewModel : ViewModel() {
