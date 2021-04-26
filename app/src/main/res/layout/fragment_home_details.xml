@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".view.fragments.HomeDetailsFragment">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_cover_image"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_150sdp"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/colorAccent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="iv_cover_image,cast_text,cast_text" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/just_gradient"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_70sdp"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/vertical_cover_style_gradient"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_cover_image"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/movie_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:textColor="@color/colorOnPrimary"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_cover_image"
+        app:layout_constraintEnd_toEndOf="@+id/iv_cover_image"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Very Very Very Very Very Long Title OF Movie" />
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/movie_rating"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:numStars="5"
+        android:stepSize="0.1"
+        android:theme="@style/MovieRatingBar"
+        android:layout_marginEnd="@dimen/_5sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/genre_label" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/genre_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@font/montserrat_light"
+        android:maxLines="1"
+        android:textSize="@dimen/_15ssp"
+        android:layout_marginStart="@dimen/_5ssp"
+        android:layout_marginTop="@dimen/_5ssp"
+        app:layout_constraintEnd_toStartOf="@+id/movie_rating"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/iv_cover_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/genre_label" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/genres_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:fontFamily="@font/montserrat"
+        android:textSize="@dimen/_10ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/genre_label"
+        app:layout_constraintTop_toBottomOf="@+id/genre_label"
+        tools:text="@string/genre_label" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/cast_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:ellipsize="end"
+        android:fontFamily="@font/montserrat_light"
+        android:maxLines="1"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintStart_toStartOf="@+id/genres_text"
+        app:layout_constraintTop_toBottomOf="@+id/genres_text"
+        tools:text="@string/movie_cast" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/cast_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:fontFamily="@font/montserrat"
+        android:textSize="@dimen/_10ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/cast_label"
+        app:layout_constraintTop_toBottomOf="@+id/cast_label"
+        tools:text="@string/movie_cast" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
+        app:spanCount="2"
+        tools:listitem="@layout/layout_image_simple" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,7 +25,7 @@ android {
                 ]
             }
         }
-        applicationId "com.jutt.citiessearchmvvm"
+        applicationId "com.jutt.moviesdetaildemo"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode appVersionCode
@@ -37,14 +37,15 @@ android {
 
         buildConfigField("String", "APPLICATION_FILE_PROVIDER", 'APPLICATION_ID + ".FileProvider"')
 
-        def mobileAppScheme = "citydemoScheme"
+        def mobileAppScheme = "catfactsdemo"
         buildConfigField("String", "MOBILE_APP_SCHEME", '"' + mobileAppScheme + '"')
-        buildConfigField("String", "GEONAMEORG_USERNAME", '"keep_truckin"')
+        buildConfigField("String", "FLICKR_API_KEY", '"8a6803cdff36ba3bc2484a3a30b07377"')
+        buildConfigField("String", "FLICKR_API_SECRET", '"174bba99fbd54c81"')
         buildConfigField("String", "APL", '"https://play.google.com/store/apps/details?id=' + applicationId + '"')
         manifestPlaceholders = [
                 mobileAppScheme      : mobileAppScheme,
         ]
-        testInstrumentationRunner "com.jutt.citiessearchmvvm.HiltTestRunner"
+        testInstrumentationRunner "com.jutt.moviesdetaildemo.HiltTestRunner"
     }
 
     buildTypes {
@@ -149,7 +150,7 @@ dependencies {
 
     implementation "com.intuit.sdp:sdp-android:$rootProject.androidSDP"
     implementation "com.intuit.ssp:ssp-android:$rootProject.androidSSP"
-//    implementation "com.github.vipafattal:KotlinRecycler:$rootProject.kotlinRecycler"
+    implementation "com.github.vipafattal:KotlinRecycler:$rootProject.kotlinRecycler"
 
 //    implementation "com.xwray:groupie:$rootProject.groupie_version"
 //    implementation "com.xwray:groupie-viewbinding:$rootProject.groupie_version"
