@@ -3,41 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/search_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_design_30"
-        android:hint="@string/search_hint"
-        app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="outline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionNext"
-            android:inputType="textPersonName"
-            android:paddingStart="@dimen/margin_design_63"
-            android:paddingEnd="0dp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSearch"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/margin_design_180"
-        android:layout_marginTop="@dimen/margin_design_36"
-        android:text="@string/search"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        app:layout_constraintEnd_toEndOf="@+id/search_input_layout"
-        app:layout_constraintStart_toStartOf="@+id/search_input_layout"
-        app:layout_constraintTop_toBottomOf="@+id/search_input_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -49,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSearch"
-        tools:listitem="@layout/layout_city_item" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/layout_header_year" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

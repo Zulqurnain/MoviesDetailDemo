@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.jutt.citiessearchmvvm">
+    package="com.jutt.moviesdetaildemo">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,12 +19,10 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <activity
-            android:name=".view.activities.HomeActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:name=".view.activities.HomeActivity" />
         <activity
             android:name=".view.activities.SplashActivity"
-            android:theme="@style/AppTheme.Splash"
-            android:configChanges="orientation|screenSize|keyboardHidden">
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
