@@ -1,37 +1,36 @@
 # MoviesDetailDemo
-This example is specifically to practice MVVM with tablet Duel-Pane Mode A.K.A Master Detail View in Android Without Using Navigation Componenet
-Support Master - Detail pattern as well as Mobile view.
 
-![Image of Yaktocat](https://github.com/Zulqurnain/MoviesDetailDemo/blob/main/graphics/untitled.gif)
+Android app showcasing MVVM architecture with tablet dual-pane master-detail view, without Navigation Component.
 
+## Architecture & Tech Stack
 
-- One Activity Only!!!
-- Kotlin Love
-- MVVM Pattern
-- ROOM
-- Algorithm used for sorting records [Shell Sort](https://en.wikipedia.org/wiki/Shellsort)
-- ViewModel
-- LiveData
-- Kotlin Flows
-- Pagination Library
-- Retrofit
-- Easy Permissions Handling
-- And URL none Safe Handling
-- File Provider SetUp
-- Navigation is Done Without Navigation Componenent to follow More Generic and testable environment
-- Dependency Injection (Dagger + Hilt)
+- **Architecture**: MVVM with Repository pattern
+- **Language**: Kotlin 2.0.21
+- **UI Pattern**: Tablet Dual-Pane Master-Detail View
+- **DI**: Dagger Hilt 2.52
+- **Networking**: Retrofit 2.11 + OkHttp 4.12
+- **Async**: Kotlin Coroutines 1.9 + RxJava 3
+- **Image Loading**: Glide 4.16
+- **Database**: Room 2.6
+- **Min SDK**: 24 | **Target SDK**: 35
 
-✨Testing✨
- ---
- - JUNIT4
- - MockItTo
- - Coroutines Test
- - Hilt Testing
- - Integration Testing
- ##Unit Testing##
- 
- Caching In case of Internet disconnectivity is done efficent
- 
- # Flickr Photo Search API
- - Flickr Phot Search API
- - Infinite photos for each movie detail
+## Features
+
+- Master-detail view optimized for tablets
+- Movie listings with API integration
+- MVVM without Navigation Component (manual back-stack)
+- Offline caching
+
+## Getting Started
+
+```bash
+git clone https://github.com/Zulqurnain/MoviesDetailDemo.git
+cd MoviesDetailDemo
+# Open in Android Studio Hedgehog or newer and run
+```
+
+---
+
+**Built by [Zulqurnain Haider](https://zulqurnainj.com/) — Senior Full Stack Engineer**
+
+For full portfolio visit: [https://zulqurnainj.com/](https://zulqurnainj.com/)
